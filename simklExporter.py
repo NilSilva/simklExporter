@@ -9,13 +9,18 @@ def make_request(url, headers=None):
 def make_csv(data):
     with open('./simklData.csv', 'w', newline='') as myfile:
         wr = csv.writer(myfile)
-        wr.writerow(['tmdbID','imdbID'])
+        wr.writerow(['tmdbID', 'imdbID', 'WatchedDate'])
         for movie in data:
-            row = [movie['tmdb'],movie['imdb']]
+            row = [movie['tmdb'], movie['imdb'], movie['WatchedDate']]
             wr.writerow(row)
 
 def map_data(data):
-    return data['movie']['ids']
+    ids = data['movie']['ids']
+    return {
+        'tmdb': ids.get('tmdb', ''),
+        'imdb': ids.get('imdb', ''),
+        'WatchedDate': data['last_watched_at'].split('T')[0] if data['last_watched_at'] else '',
+    }
 
 config = configparser.ConfigParser()
 
